@@ -126,8 +126,14 @@
 	       (cond ((< wt wtin) (aconc (cons '|(| res) '|)| ))
 		     (t res))))
 	((eq (car exp) 'expt)
-	 (append (cons 'pow (cons '|(| (cexp1 (cadr exp) 0)))
+     (cond ((eq (cadr exp) '%E)
+       (cons 'exp (cons '|(| (aconc (cexp1 (caddr exp) 0) '|)| ))))
+      ((or (equal (caddr exp) 0.5) (equal (caddr exp) '(QUOTIENT 1 2)))
+        (cons 'sqrt (cons '|(| (aconc (cexp1 (cadr exp) 0) '|)| ))))
+      (t 
+	   (append (cons 'pow (cons '|(| (cexp1 (cadr exp) 0)))
                  (aconc (cons '|,| (cexp1 (caddr exp) 0)) '|)| )))
+    ))
 	((or (member (car exp) *lisparithexpops* :test #'eq)
 	     (member (car exp) *lisplogexpops* :test #'eq))
 	 (let* ((wt (cprecedence (car exp)))
@@ -152,7 +158,8 @@
 						 (cexp1 (car exp) wt)))))))
 	       (cond ((< wt wtin) (aconc (cons '|(| res) '|)| ))
 		     (t res))))
-	((arrayeltp exp)
+	((eq (car exp) 'array)
+     (setq exp (cdr exp))
 	 (let ((res (list (car exp))))
 	      (while (setq exp (cdr exp))
                  (setq res (append res
@@ -248,7 +255,8 @@
 		       (setq st (mkstmtgp 0 (list st)))))
 		(setq r (append r (cstmt st)))
 		(indentclevel (- 1))))
-	(cond (stmt (progn
+;    (format t "cdr stmt: ~S~%" (cadar stmt))
+	(cond ((cadar stmt) (progn
 		     (setq r (append r (mkfcelse)))
 		     (indentclevel (+ 1))
 		     (setq st (seqtogp (cdar stmt)))

@@ -89,12 +89,14 @@
   (coerce (princ-to-string m) 'list))
 
 
-(defmacro filep (m)
+(defun filep (m)
 ;                                ;
 ; (filep str)  -->  (probef str) ;
 ;                                ;
-  (streamp m))
+  (streamp (open m :direction :probe :if-does-not-exist nil)))
 
+(defun infile (m)
+  (open m :direction :input :if-does-not-exist nil))
 
 (defmacro flag (&rest m)
 ;                                                   ;
@@ -130,7 +132,8 @@
 ;                                     ;
 ; (mkfil arg)  -->  (stripdollar arg) ;
 ;                                     ;
-  (cons 'stripdollar m))
+;  (cons 'stripdollar m))
+m)
 
 
 (defun posn ()

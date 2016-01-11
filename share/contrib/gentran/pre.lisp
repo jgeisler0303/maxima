@@ -83,7 +83,7 @@
 	       (cond ((and (member op '(lsetq lrsetq))
 			   (listp lhs))
 		      (setq lhs
-			    (cons (list (caar lhs))
+			    (cons (car lhs)
 				  (foreach s in (cdr lhs) collect
 					   (list '($eval) s))))))
 	       (cond ((member op '(rsetq lrsetq))

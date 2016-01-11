@@ -260,34 +260,25 @@
 
 
 (defun gentranin (inlist outlist)
-  (prog (holdich)
-	(foreach inf in (setq inlist (preproc inlist)) do
+  (prog ()
+        (foreach inf in (setq inlist (preproc inlist)) do
 		 (cond ((listp inf)
 			(gentranerr 'e inf "wrong type of arg" nil))
 		       ((and (not (filep (mkfil inf))) (not (eq inf 't)))
 			(gentranerr 'e inf "nonexistent input file" nil))))
 	(cond (outlist
 	       (eval (list 'gentranoutpush (list 'quote outlist) nil))))
-	(setq holdich (rds nil))
-	(foreach inf in inlist do
-		 (progn
-		  (cond ((equal inf (car *stdin*))
-			 (pushinstk *stdin*))
-			((filpr inf *instk*)
-			 (gentranerr 'e
-				     inf
-				     "template file already open for input"
-				     nil))
-			(t
-			 (pushinstk (cons inf (infile (mkfil inf))))))
-		  (rds (cdr *currin*))
-		  (cond ((eq *gentranlang 'ratfor) (procrattem))
+	
+        (unwind-protect 
+          (foreach inf in inlist do
+		 (with-open-file (s inf :direction :input)
+                  (let ((*standard-input* s) (*currin* (cons inf s)))
+                  (cond ((eq *gentranlang 'ratfor) (procrattem))
 			((eq *gentranlang 'c) (procctem))
-			(t (procforttem)))
-		  (rds holdich)
-		  (cond ((cdr *currin*) (close (cdr *currin*))))
-		  (popinstk)))
-	(return (cond (outlist
+			(t (procforttem))))
+		  
+          )
+          ) (cond (outlist
 		       (progn
 			(setq outlist (or (car *currout*)
 					  (cons '(mlist) (cdr *currout*))))
@@ -295,7 +286,10 @@
 			outlist))
 		      (t
 		       (or (car *currout*)
-			   (cons '(mlist) (cdr *currout*))))))))
+			   (cons '(mlist) (cdr *currout*)))))
+       )
+     (return '$done)
+))
 
 
 ;;  misc. control functions  ;;

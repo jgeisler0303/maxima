@@ -174,6 +174,13 @@
 						 (fortexp1 (car exp) wt)))))))
 	       (cond ((< wt wtin) (aconc (cons '|(| res) '|)|))
 		     (t res))))
+    ((eq (car exp) 'array)
+     (setq exp (cdr exp))
+         (let ((res (cons (car exp) (cons '|(| (fortexp1 (cadr exp) 0)))))
+              (setq exp (cdr exp))
+          (while (setq exp (cdr exp))
+                 (setq res (append res (cons '|,| (fortexp1 (car exp) 0)))))
+              (aconc res '|)|)))
 	(t
 	 (let ((res (cons (car exp) (cons '|(| (fortexp1 (cadr exp) 0)))))
               (setq exp (cdr exp))

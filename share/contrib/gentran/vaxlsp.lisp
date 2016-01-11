@@ -89,7 +89,9 @@
 	       (t
 		(stripdollar1 exp))))
 
-	((eq (caar exp) '$gquote) (cadr exp)) ;; gquote added by pwang 11/10/86
+	((eq (caar exp) '$gquote)
+;     (format t "$gquote: ~S~%" exp)	
+	 (cadr exp)) ;; gquote added by pwang 11/10/86
 	((eq (caar exp) 'mtimes)
 	 (simptimes1 (foreach term in (cdr exp) collect
 			      (franzexp term 0 exp))
@@ -139,11 +141,19 @@
 	       (mapcar (function
 			(lambda (elt) (franzexp elt ind exp)))
 		       (cdr exp))))
+    ((or (eq (caddar exp) 'array) (eq (cadar exp) 'array))
+;     (format t "array: ~S~%" exp)
+     (cons 'array (cons  (franzexp (caar exp) 1 nil)
+           (mapcar (function
+            (lambda (elt) (franzexp elt 1 nil)))
+               (cdr exp)))))
 	(t
 	 (cons (franzexp (caar exp) 1 nil)
 	       (mapcar (function
 			(lambda (elt) (franzexp elt 1 nil)))
-		       (cdr exp))))))
+		       (cdr exp))))
+    )
+)
 ;;	1 is always the right selection?????
 
 ;;	Following several functions were added by Trevor 12/86
