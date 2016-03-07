@@ -142,7 +142,7 @@
 		(res1))
 	       (setq exp (cdr exp))
 	       (cond ((eq op '+)
-		      (while (setq exp (cdr exp))
+		      (gt_while (setq exp (cdr exp))
                          (progn
 			  (setq res1 (cexp1 (car exp) wt))
 			  (cond ((or (eq (car res1) '-)
@@ -152,7 +152,7 @@
 				(t
 				 (setq res (append res (cons op res1))))))))
 		     (t
-		      (while (setq exp (cdr exp))
+		      (gt_while (setq exp (cdr exp))
                          (setq res (append res
 					   (cons op
 						 (cexp1 (car exp) wt)))))))
@@ -161,7 +161,7 @@
 	((eq (car exp) 'array)
      (setq exp (cdr exp))
 	 (let ((res (list (car exp))))
-	      (while (setq exp (cdr exp))
+	      (gt_while (setq exp (cdr exp))
                  (setq res (append res
 				   (aconc (cons '|[| (cexp1 (car exp) 0)) '|]|))))
 	      res))
@@ -169,7 +169,7 @@
 	(t
 	 (let ((res (cons (car exp) (cons '|(| (cexp1 (cadr exp) 0)))))
               (setq exp (cdr exp))
-	      (while (setq exp (cdr exp))
+	      (gt_while (setq exp (cdr exp))
                  (setq res (append res (cons '|,| (cexp1 (car exp) 0)))))
               (aconc res '|)|)))))
 
@@ -192,10 +192,10 @@
 	((equal (car stmt) 'literal) (cliteral stmt))
 	((lispassignp stmt) (cassign stmt))
 	((lispcondp stmt) (cif stmt))
-	((lispbreakp stmt) (cbreak stmt))
+	((lispbreakp stmt) (cbreak ))
 	((lispgop stmt) (cgoto stmt))
 	((lispreturnp stmt) (creturn stmt))
-	((lispstopp stmt) (cexit stmt))
+	((lispstopp stmt) (cexit ))
 	((lispdop stmt) (cloop stmt))
 	((lispstmtgpp stmt) (cstmtgp stmt))
 	((lispdefp stmt) (cproc stmt))
@@ -204,10 +204,10 @@
 (defun cassign (stmt)
   (mkfcassign (cadr stmt) (caddr stmt)))
 
-(defun cbreak (stmt)
+(defun cbreak ()
   (mkfcbreak))
 
-(defun cexit (stmt)
+(defun cexit ()
   (mkfcexit))
 
 (defun cexpstmt (exp)
@@ -243,7 +243,7 @@
 	(setq r (append r (cstmt st)))
 	(indentclevel (- 1))
 	(setq stmt (cdr stmt))
-	(while (and (setq stmt (cdr stmt))
+	(gt_while (and (setq stmt (cdr stmt))
 		    (not (eq (caar stmt) t)))
 	       (progn
 		(setq r (append r (mkfcelseif (caar stmt))))

@@ -103,8 +103,8 @@
 ; (flag varlst fname)  -->  (foreach v in varlst do ;
 ;                             (putprop v t fname))  ;
 ;                                                   ;
-  `(foreach v in ,(cadr m) do
-     (putprop v t ,(caddr m))))
+  `(foreach v in ,(car m) do
+     (putprop v t ,(cadr m))))
 
 
 (defun flagp (var fname)
@@ -147,7 +147,8 @@ m)
 
 (defun exec (program)
   #+clisp (EXT:RUN-PROGRAM program)
-  #+cmu (ext:run-program program))
+  #+cmu (ext:run-program program)
+  #+sbcl (sb-ext:run-program program '()))
 
 (defmacro prettyprint (m)
 ;                                                      ;
@@ -208,7 +209,7 @@ m)
   `(dotimes (i ,m) (princ " ")))
 
 
-(defmacro while (exp stmt)
+(defmacro gt_while (exp stmt)
 ;                                                          ;
 ; (while exp stmt)  -->  (prog ()                          ;
 ;                              loop                        ;

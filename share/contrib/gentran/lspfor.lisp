@@ -158,7 +158,7 @@
 		(res1))
 	       (setq exp (cdr exp))
 	       (cond ((eq op '+)
-		      (while (setq exp (cdr exp))
+		      (gt_while (setq exp (cdr exp))
                          (progn
 			  (setq res1 (fortexp1 (car exp) wt))
 			  (cond ((or (eq (car res1) '-)
@@ -168,7 +168,7 @@
 				(t
 				 (setq res (append res (cons op res1))))))))
 		     (t
-		      (while (setq exp (cdr exp))
+		      (gt_while (setq exp (cdr exp))
                          (setq res (append res
 					   (cons op
 						 (fortexp1 (car exp) wt)))))))
@@ -178,13 +178,13 @@
      (setq exp (cdr exp))
          (let ((res (cons (car exp) (cons '|(| (fortexp1 (cadr exp) 0)))))
               (setq exp (cdr exp))
-          (while (setq exp (cdr exp))
+          (gt_while (setq exp (cdr exp))
                  (setq res (append res (cons '|,| (fortexp1 (car exp) 0)))))
               (aconc res '|)|)))
 	(t
 	 (let ((res (cons (car exp) (cons '|(| (fortexp1 (cadr exp) 0)))))
               (setq exp (cdr exp))
-	      (while (setq exp (cdr exp))
+	      (gt_while (setq exp (cdr exp))
                  (setq res (append res (cons '|,| (fortexp1 (car exp) 0)))))
               (aconc res '|)|)))))
 
@@ -223,6 +223,7 @@
   (mkffortassign (cadr stmt) (caddr stmt)))
 
 (defun fortbreak (stmt)
+  (declare (ignore stmt))
   (cond ((null *endofloopstack*)
 	 (gentranerr 'e nil "break not inside loop - cannot be translated" nil))
 	((atom (car *endofloopstack*))
@@ -255,6 +256,7 @@
 	(return result)))
 
 (defun fortend (stmt)
+  (declare (ignore stmt))
   (mkffortend))
 
 (defun fortfor (var lo nextexp exitcond body)
@@ -349,7 +351,7 @@
 )
 
 (defun fortloop (stmt)
-  (prog (var lo nextexp exitcond body r)
+  (prog (var lo nextexp exitcond body)
 	(cond ((complexdop stmt)
 	       (return (fortstmt (seqtogp (simplifydo stmt))))))
 	(cond ((setq var (cadr stmt))
@@ -425,6 +427,7 @@
 	(return (mkffortcontinue stmtno))))
 
 (defun fortstop (stmt)
+  (declare (ignore stmt))
   (mkffortstop))
 
 (defun fortwhile (exitcond body)

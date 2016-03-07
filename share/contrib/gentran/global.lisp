@@ -202,7 +202,7 @@
 
 (defun delstk (pr)
   ; remove all occurrences of filepair from output file stack ;
-  (while (member pr (cdr (reverse *outstk*)))
+  (gt_while (member pr (cdr (reverse *outstk*)))
 	 (popstk pr)))
 
 (defun flisteqp (flist1 flist2)
@@ -241,10 +241,10 @@
 	(t
 	 (prog (stk1 stk2)
 	       (setq stk1 *outstk*)
-	       (while (not (equal (car stk1) pr))
+	       (gt_while (not (equal (car stk1) pr))
 		      (progn (setq stk2 (aconc stk2 (car stk1)))
 			     (setq stk1 (cdr stk1))))
-	       (while (not (equal (car stk1) '(nil)))
+	       (gt_while (not (equal (car stk1) '(nil)))
 		      (setq stk1 (cdr stk1)))
 	       (resetstk (append stk2 (cdr stk1)))))))
 
@@ -462,7 +462,7 @@
   (prog (result)
 	(cond ((null lst) (return nil)))
 	(setq result (list (car lst)))
-	(while (setq lst (cdr lst))
+	(gt_while (setq lst (cdr lst))
 	       (setq result (cons (car lst)
 				  (cons '|,| result))))
 	(return (reverse result))))

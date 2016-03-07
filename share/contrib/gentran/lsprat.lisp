@@ -142,7 +142,7 @@
 		(res1))
 	       (setq exp (cdr exp))
 	       (cond ((eq op '+)
-		      (while (setq exp (cdr exp))
+		      (gt_while (setq exp (cdr exp))
                          (progn
 			  (setq res1 (ratexpgen1 (car exp) wt))
 			  (cond ((or (eq (car res1) '-)
@@ -152,7 +152,7 @@
 				(t
 				 (setq res (append res (cons op res1))))))))
 		     (t
-		      (while (setq exp (cdr exp))
+		      (gt_while (setq exp (cdr exp))
                          (setq res (append res
 					   (cons op
 						 (ratexpgen1 (car exp) wt)))))))
@@ -162,13 +162,13 @@
      (setq exp (cdr exp))
      (let ((res (cons (car exp) (cons '|(| (ratexpgen1 (cadr exp) 0)))))
               (setq exp (cdr exp))
-          (while (setq exp (cdr exp))
+          (gt_while (setq exp (cdr exp))
                  (setq res (append res (cons '|,| (ratexpgen1 (car exp) 0)))))
               (aconc res '|)| )))
 	(t
 	 (let ((res (cons (car exp) (cons '|(| (ratexpgen1 (cadr exp) 0)))))
               (setq exp (cdr exp))
-	      (while (setq exp (cdr exp))
+	      (gt_while (setq exp (cdr exp))
                  (setq res (append res (cons '|,| (ratexpgen1 (car exp) 0)))))
               (aconc res '|)| )))))
 
@@ -207,6 +207,7 @@
   (mkfratassign (cadr stmt) (caddr stmt)))
 
 (defun ratbreak (stmt)
+  (declare (ignore stmt))
   (mkfratbreak))
 
 (defun ratcall (stmt)
@@ -224,6 +225,7 @@
 	(return r)))
 
 (defun ratend (stmt)
+  (declare (ignore stmt))
   (mkfratend))
 
 (defun ratforfor (var lo nextexp cond body)
@@ -288,7 +290,7 @@
   (mkfratliteral (cdr stmt)))
 
 (defun ratloop (stmt)
-  (prog (var lo nextexp exitcond body r)
+  (prog (var lo nextexp exitcond body)
 	(cond ((complexdop stmt)
 	       (return (ratstmt (seqtogp (simplifydo stmt))))))
 	(cond ((setq var (cadr stmt))
@@ -351,6 +353,7 @@
 	(return (mkfratcontinue stmtno))))
 
 (defun ratstop (stmt)
+  (declare (ignore stmt))
   (mkfratstop))
 
 (defun ratwhile (cond body)

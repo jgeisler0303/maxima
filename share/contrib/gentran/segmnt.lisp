@@ -82,7 +82,7 @@
   ;               (n)       (n-1)       (n-2)           (1)  ;
   (prog (expn assigns newassigns unops op termlist var tmp)
 	(setq expn exp)
-	(while (equal (length expn) 2)
+	(gt_while (equal (length expn) 2)
 	       (progn
 		(setq unops (cons (car expn) unops))
 		(setq expn (cadr expn))))
@@ -119,7 +119,7 @@
 			  (car termlist))
 			 (t
 			  (cons op termlist))))
-	(while unops
+	(gt_while unops
 	       (progn
 		(setq expn (list (car unops) expn))
 		(setq unops (cdr unops))))
@@ -182,7 +182,7 @@
 	       (setq type 'int))
 	      (t
 	       (setq type 'logical)))
-	(while (setq cond (cdr cond))
+	(gt_while (setq cond (cdr cond))
 	       (prog (exp stmt)
 		     (cond ((toolongexpp (setq exp (caar cond)))
 			    (progn
@@ -268,7 +268,7 @@
 		(setq stmtgp (cdr stmtgp))))
 	      (t
 	       (setq locvars 0)))
-	(while (setq stmtgp (cdr stmtgp))
+	(gt_while (setq stmtgp (cdr stmtgp))
 	       (setq res (cons (segstmt (car stmtgp)) res)))
 	(return (mkstmtgp locvars (reverse res)))))
 
@@ -309,7 +309,7 @@
 
 (defun toolongcondp (cond)
   (prog (toolong)
-	(while (setq cond (cdr cond))
+	(gt_while (setq cond (cdr cond))
 	       (cond ((or (toolongexpp (caar cond))
 			  (toolongstmtp (cadar cond)))
 		      (setq toolong t))))

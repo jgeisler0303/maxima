@@ -32,6 +32,6 @@
 (putprop 'ratcode "lsprat" 'autoload)
 (putprop 'ccode "lspc"   'autoload)
 
-(dolist (fname '("init" "lspfor" "lspc" "lsprat" "templt" "global" "intrfc"
+(dolist (fname '("opt" "parser" "init" "lspfor" "lspc" "lsprat" "templt" "global" "intrfc"
 		 "pre" "output" "vaxlsp" "segmnt"))
   (load (merge-pathnames fname (maxima-load-pathname-directory))))
